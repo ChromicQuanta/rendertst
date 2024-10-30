@@ -1,0 +1,132 @@
+<canvas width=600 height=400 id="can"></canvas>
+
+<script>
+    pot = []
+    for(j=0;j<600;j++){
+       // pot[j] = ((j-300)**2)/90000
+       pot[j] = (Math.abs(j-300))/300
+    }
+    function add(z1,z2,c1,c2){
+        return [c1*z1[0]+z2[0]*c2,c1*z1[1]+z2[1]*c2]
+    }
+    function mult(z1,z2){
+        return [z1[0]*z2[0]-z1[1]*z2[1],z1[0]*z2[1]+z1[1]*z2[0]]
+    }
+    function mod(x,m){
+        return x-Math.floor(x/m)*m
+    }
+
+    function der(x,n){
+        return add(add(w[n][mod(x+1,600)],w[n][mod(x,600)],1,-1)  ,  add(w[n][mod(x,600)],w[n][mod(x-1,600)],1,-1),1/2,1/2)
+    }
+
+    function der2(x,n){
+        return add( add(der(x,n),der(x-1,n),1,-1) , add(der(x+1,n),der(x,n),1,-1) ,1/2,1/2)
+    }
+    function Gauss(x){
+        return Math.exp(-(x**2)/2)/Math.sqrt(2*Math.PI)
+    }
+    c = can.getContext("2d")
+    w1 = new Array(600).fill(0)
+    w2 = new Array(600).fill(0)
+    spike = new Array(600).fill(0)
+    
+    function ss(n){
+        var k
+        for(k=0;k<599;k++){
+            var mag = add(der2(k,n),der2(k+1,n),1/Math.hypot(der2(k,n)[0],der2(k,n)[1]),1/Math.hypot(der2(k+1,n)[0],der2(k+1,n)[1]))
+            mag = 1/Math.hypot(mag[0],mag[1])
+
+            //mag+=Math.hypot(w[n][k][0],w[n][k][1])**2
+            //spike[k] = mag
+        }
+        for(k=0;k<600-4;k++){
+            var mag = [Math.hypot(w[n][k][0],w[n][k][1]),Math.hypot(w[n][k+1][0],w[n][k+1][1]),Math.hypot(w[n][k+2][0],w[n][k+2][1]),Math.hypot(w[n][k+3][0],w[n][k+3][1])]
+            mag = [mag[1]-mag[0],mag[2]-mag[1],mag[3]-mag[2]]
+            mag=(-(mag[0]+mag[2])/mag[1]) <0 ? 1/((mag[0]+mag[2])/mag[1]):((mag[0]+mag[2])/mag[1])
+
+            //mag+=Math.hypot(w[n][k][0],w[n][k][1])**2
+            spike[k] = mag/10000
+        }
+    }
+    for(n=0;n<600;n++){
+        w1[n] = [Gauss((n-300)/10)*(Math.cos(n*1)),Gauss((n-300)/10)*(Math.sin(n*1))]
+        w2[n] = [0,0]
+    }
+    w = [w1,w2]
+
+sc = 400
+
+
+function Animate(){
+
+    for(n=0;n<600;n++){
+        w[1][n] = [].concat(w[0][n])
+    }
+    for(n=0;n<600;n++){
+    //    w[1][0]=[0,0]
+//w[0][0]=[0,0]
+
+//w[1][599]=[0,0]
+//w[0][599]=[0,0]
+        //w[1][n] = add( mult( add(mult(der2(n,0),[-1,0]),mult(w[0][n],[((n-300)**2)/90000,0]),1,1),[0,-1]) ,w[1][n],0.01,1)
+        //w[1][n] = add( mult( add(mult(der2(n,0),[-1,0]),mult(w[0][n],[Math.abs(n-300)>50 ? 1 : 0,0]),1,1),[0,-1]) ,w[1][n],0.01,1)
+       w[1][n] = add( mult( add(mult(der2(n,0),[-1,0]),mult(w[0][n],[pot[n],0]),1,1),[0,-1]) ,w[1][n],0.01,1)
+    }
+    sum = 0
+    for(n=0;n<600;n++){
+        sum+=Math.hypot(w[1][n][0],w[1][n][1])**2
+    }
+    for(n=0;n<600;n++){
+        w[1][n]=mult(w[1][n],[1/Math.sqrt(sum),0])
+    }
+
+    w.reverse()
+
+    
+    }
+    function Animult(){
+        for(k=0;k<10;k++){
+            Animate()
+        }
+        c.fillStyle="#000000"
+    c.fillRect(0,0,can.width,can.height)
+
+    c.lineWidth=1
+    c.strokeStyle = "#FF0000"
+    c.beginPath()
+    c.moveTo(0,can.height/2)
+    c.lineTo(600,can.height/2)
+    c.stroke()
+
+    c.lineWidth=2
+
+    ss(0)
+/*
+    for(n=0;n<599;n++){
+        c.strokeStyle = "#FF00FF"
+        c.beginPath()
+        c.moveTo(n,(can.height/2) - spike[n]*100)
+        c.lineTo(n+1,(can.height/2) - spike[n+1]*100)
+        c.stroke()
+    }
+*/
+for(n=0;n<599;n++){
+        c.strokeStyle = "#00FFAA"
+        c.beginPath()
+        c.moveTo(n,(can.height/2) - pot[n]*100)
+        c.lineTo(n+1,(can.height/2) - pot[n]*100)
+        c.stroke()
+    }
+    for(n=0;n<599;n++){
+        c.strokeStyle = "#FFFFFF"
+        c.beginPath()
+        c.moveTo(n,(can.height/2) - Math.hypot(w[0][n][0],w[0][n][1])*sc )
+        c.lineTo(n+1,(can.height/2) - Math.hypot(w[0][n+1][0],w[0][n+1][1])*sc )
+        c.stroke()
+    }
+requestAnimationFrame(Animult)
+    
+    }
+Animult()
+</script>
