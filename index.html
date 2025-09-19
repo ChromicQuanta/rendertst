@@ -1,4 +1,4 @@
-<canvas width=600 height=400 id="can"></canvas>
+<canvas width=600 height=400 id="can1"></canvas>
 
 <script>
     pot = []
@@ -26,7 +26,7 @@
     function Gauss(x){
         return Math.exp(-(x**2)/2)/Math.sqrt(2*Math.PI)
     }
-    c = can.getContext("2d")
+    c1 = can1.getContext("2d")
     w1 = new Array(600).fill(0)
     w2 = new Array(600).fill(0)
     spike = new Array(600).fill(0)
@@ -58,7 +58,7 @@
 sc = 400
 
 
-function Animate(){
+function Animate1(){
 
     for(n=0;n<600;n++){
         w[1][n] = [].concat(w[0][n])
@@ -87,46 +87,231 @@ function Animate(){
     }
     function Animult(){
         for(k=0;k<10;k++){
-            Animate()
+            Animate1()
         }
-        c.fillStyle="#000000"
-    c.fillRect(0,0,can.width,can.height)
+        c1.fillStyle="#000000"
+    c1.fillRect(0,0,can.width,can.height)
 
-    c.lineWidth=1
-    c.strokeStyle = "#FF0000"
-    c.beginPath()
-    c.moveTo(0,can.height/2)
-    c.lineTo(600,can.height/2)
-    c.stroke()
+    c1.lineWidth=1
+    c1.strokeStyle = "#FF0000"
+    c1.beginPath()
+    c1.moveTo(0,can.height/2)
+    c1.lineTo(600,can.height/2)
+    c1.stroke()
 
-    c.lineWidth=2
+    c1.lineWidth=2
 
     ss(0)
 /*
     for(n=0;n<599;n++){
-        c.strokeStyle = "#FF00FF"
-        c.beginPath()
-        c.moveTo(n,(can.height/2) - spike[n]*100)
-        c.lineTo(n+1,(can.height/2) - spike[n+1]*100)
-        c.stroke()
+        c1.strokeStyle = "#FF00FF"
+        c1.beginPath()
+        c1.moveTo(n,(can.height/2) - spike[n]*100)
+        c1.lineTo(n+1,(can.height/2) - spike[n+1]*100)
+        c1.stroke()
     }
 */
 for(n=0;n<599;n++){
-        c.strokeStyle = "#00FFAA"
-        c.beginPath()
-        c.moveTo(n,(can.height/2) - pot[n]*100)
-        c.lineTo(n+1,(can.height/2) - pot[n]*100)
-        c.stroke()
+        c1.strokeStyle = "#00FFAA"
+        c1.beginPath()
+        c1.moveTo(n,(can.height/2) - pot[n]*100)
+        c1.lineTo(n+1,(can.height/2) - pot[n]*100)
+        c1.stroke()
     }
     for(n=0;n<599;n++){
-        c.strokeStyle = "#FFFFFF"
-        c.beginPath()
-        c.moveTo(n,(can.height/2) - Math.hypot(w[0][n][0],w[0][n][1])*sc )
-        c.lineTo(n+1,(can.height/2) - Math.hypot(w[0][n+1][0],w[0][n+1][1])*sc )
-        c.stroke()
+        c1.strokeStyle = "#FFFFFF"
+        c1.beginPath()
+        c1.moveTo(n,(can.height/2) - Math.hypot(w[0][n][0],w[0][n][1])*sc )
+        c1.lineTo(n+1,(can.height/2) - Math.hypot(w[0][n+1][0],w[0][n+1][1])*sc )
+        c1.stroke()
     }
 requestAnimationFrame(Animult)
     
     }
 Animult()
 </script>
+
+
+
+
+
+
+
+<canvas width=160 height=100 id="can"></canvas>
+<script>
+stars = []
+for(n=0;n<200;n++){
+    stars.push({t:Math.random()*Math.PI*2,p:Math.asin(Math.random())})
+}
+parts = []
+
+onresize=()=>{
+    can.width=Math.round(innerWidth)
+    can.height=Math.round(innerHeight)
+
+    width=can.width
+    height=can.height
+    minD = Math.min(width,height)
+    maxD = Math.max(width,height)
+}
+    function hx(X){
+        x=X
+        if(x>=255) return "ff"
+        if(x<=0) return "00"
+        return Math.round(x).toString(16).padStart(2,0)
+    }
+    can.onclick = ()=>{can.requestPointerLock()
+        can.requestFullscreen()
+        document.body.style.backgroundColor="#000"
+    }
+    can.onmousemove=(pos)=>{
+        camera.t+=pos.movementX/500
+        camera.p+=-pos.movementY/500
+    }
+    keys = {}
+    onkeyup=(key)=>{
+        keys[key.key.toLowerCase()] = 0
+    }
+    onkeydown=(key)=>{
+        keys[key.key.toLowerCase()] = 1
+}
+function dSort(arr,obj){
+    if(!obj){var obj={x:0,y:0,z:0}}
+    arr.sort((a,b)=>{return Math.hypot(b.x-camera.x+obj.x,b.y-camera.y+obj.y,b.z-camera.z+obj.z)-Math.hypot(a.x-camera.x+obj.x,a.y-camera.y+obj.y,a.z-camera.z+obj.z)})
+}
+    width=can.width
+    height=can.height
+    minD = Math.min(width,height)
+    maxD = Math.max(width,height)
+function compMult([a,b],[x,y]){
+    return [a*x-b*y,a*y+b*x]
+}
+function compUnit(theta){
+    return [Math.cos(theta),Math.sin(theta)]
+}
+speed=0.01
+g=0.01
+c=can.getContext("2d")
+objects=[]
+for(m=0;m<20;m++){
+    objects[m]={model:[],x:Math.floor(m/10)*4,y:1,z:4*(m%10),t:0,p:0}
+for(n=0;n<100;n++){
+    objects[m].model[n]={x:Math.cos(Math.PI*n/50),y:Math.sin(Math.PI*n/50),z:0,r:0.1,color:"#FF"+hx(m*10)+hx((20-m)*10)}
+}
+}
+t=0
+camera = {x:0,y:0,z:0,t:0,p:0}
+player = {vx:0,vy:0,vz:0}
+function cap(min,x,max){
+    return Math.min(Math.max(x,min),max)
+}
+function Animate(){
+
+    var n
+    var o
+
+    dSort(objects)
+    if(keys["w"]) player.vz+=Math.cos(camera.t)*speed
+    if(keys["w"]) player.vx+=Math.sin(camera.t)*speed
+    if(keys["s"]) player.vz-=Math.cos(camera.t)*speed
+    if(keys["s"]) player.vx-=Math.sin(camera.t)*speed
+    if(keys["d"]) player.vz-=Math.sin(camera.t)*speed
+    if(keys["d"]) player.vx+=Math.cos(camera.t)*speed
+    if(keys["a"]) player.vz+=Math.sin(camera.t)*speed
+    if(keys["a"]) player.vx-=Math.cos(camera.t)*speed
+    if(keys[" "]) player.vy+=speed
+    if(keys["shift"]) player.vy-=speed
+    camera.p=Math.max(camera.p,-(Math.PI/2)+0.0001)
+    camera.p=Math.min(camera.p,(Math.PI/2)-0.0001)
+    camera.t=camera.t-Math.floor(camera.t/(2*Math.PI))*(2*Math.PI)
+    //c.fillStyle="#0055AA"
+    SkyG=c.createLinearGradient(0,-can.height,0,can.height)
+    SkyG.addColorStop(0,"#0055AA")
+    //SkyG.addColorStop(cap(0,0.5+0.5*((1+Math.tan(camera.p)*(maxD/height))/2)-0.6,1),"#0000AA")
+    SkyG.addColorStop(cap(0,0.5+0.5*((1+Math.tan(camera.p)*(maxD/height))/2)-0.2,1),"#2200AA")
+    SkyG.addColorStop(cap(0,0.5+0.5*((1+Math.tan(camera.p)*(maxD/height))/2)-0.005,1),"#4400CC")
+    SkyG.addColorStop(cap(0,0.5+0.5*((1+Math.tan(camera.p)*(maxD/height))/2)-0.0025,1),"#6644CC")
+    SkyG.addColorStop(cap(0,0.5+0.5*((1+Math.tan(camera.p)*(maxD/height))/2),1),"#2C0044")
+    c.fillStyle=SkyG
+    c.fillRect(0,0,can.width,can.height)
+
+
+    for(n=0;n<stars.length;n++){
+    c.fillStyle="#FFFFFFAA"
+    var X
+    var Y
+    var Z
+
+    c.beginPath()
+    //var SP=[(Math.tan(stars[n].t-camera.t)*maxD+width)/2,height/2]
+    //var SP=[(Math.tan(stars[n].t-camera.t)*maxD+width)/2,(-Math.tan(SP[1])*maxD+height)/2]
+    var [X,Y,Z] = [( Math.sin(stars[n].t) )*Math.cos(stars[n].p),Math.sin(stars[n].p),( Math.cos(stars[n].t) )*Math.cos(stars[n].p)]
+    var [Z,X]=compMult([Z,X],compUnit(-camera.t))
+    var [Z,Y]=compMult([Z,Y],compUnit(-camera.p))
+    //var [Z,Y]=compMult([Z,Y],compUnit(-camera.p))
+    //var [Z,Y]=compMult([Z,Y],compUnit(stars[n].p))
+    if(Z>0){
+    c.arc(((X/Z)*maxD+width)/2,(height-(Y/Z)*maxD)/2,maxD/1000,0,Math.PI*2)
+    c.fill()
+    }
+}
+
+    c.fillStyle="#2C0033"
+    //c.fillRect(0,(height+Math.tan(camera.p)*(maxD))/2,can.width,Number.MAX_SAFE_INTEGER)
+
+
+
+
+
+    for(n=0;n<objects.length;n++){
+        dSort(objects[n].model,objects[n])
+        for(o=0;o<objects[n].model.length;o++){
+OX = objects[n].model[o].x
+OY = objects[n].model[o].y
+OZ = objects[n].model[o].z
+var [OZ,OX]=compMult([OZ,OX],compUnit(-objects[n].t))
+var [OZ,OY]=compMult([OZ,OY],compUnit(-objects[n].p))
+
+             X = OX+objects[n].x-camera.x;
+             Y = OY+objects[n].y-camera.y;
+             Z = OZ+objects[n].z-camera.z;
+            var [Z,X]=compMult([Z,X],compUnit(-camera.t))
+            var [Z,Y]=compMult([Z,Y],compUnit(-camera.p))
+            var D = Math.hypot(X,Y,Z)
+            var S = Z
+            POS=[X,Y,Z,D]
+            if(Z<=0)continue
+
+            /* 
+            c.fillStyle="#000000"
+            c.beginPath()
+            c.arc((maxD*(X/S)+width)/2,((height)-(Y/S)*maxD)/2,(0.5*maxD*objects[n].model[o].r/(S))*0.99,0,Math.PI*2)
+            c.fill()
+            */
+
+            c.fillStyle=objects[n].model[o].color//+hx((1000/(D**0.5))+150)
+            c.beginPath()
+            c.arc((maxD*(X/S)+width)/2,((height)-(Y/S)*maxD)/2,0.5*maxD*objects[n].model[o].r/(S),0,Math.PI*2)
+            c.fill()
+        }
+    }
+    t++
+    camera.x+=player.vx
+    camera.y+=player.vy
+    camera.z+=player.vz
+
+   // player.vy-=g
+
+    if(camera.y<=0){
+        camera.y=0
+        player.vy=0
+    }
+    player.vx*=0.95
+    player.vy*=0.95
+    player.vz*=0.95
+
+    requestAnimationFrame(Animate)
+}
+Animate()
+</script>
+
