@@ -90,7 +90,7 @@ function Animate1(){
             Animate1()
         }
         c1.fillStyle="#000000"
-    c1.fillRect(0,0,can.width,can.height)
+    c1.fillRect(0,0,can1.width,can1.height)
 
     c1.lineWidth=1
     c1.strokeStyle = "#FF0000"
@@ -162,7 +162,7 @@ onresize=()=>{
     }
     can.onclick = ()=>{can.requestPointerLock()
         can.requestFullscreen()
-        document.body.style.backgroundColor="#000"
+        //document.body.style.backgroundColor="#000"
     }
     can.onmousemove=(pos)=>{
         camera.t+=pos.movementX/500
