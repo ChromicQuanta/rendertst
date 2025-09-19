@@ -95,8 +95,8 @@ function Animate1(){
     c1.lineWidth=1
     c1.strokeStyle = "#FF0000"
     c1.beginPath()
-    c1.moveTo(0,can.height/2)
-    c1.lineTo(600,can.height/2)
+    c1.moveTo(0,can1.height/2)
+    c1.lineTo(600,can1.height/2)
     c1.stroke()
 
     c1.lineWidth=2
@@ -106,23 +106,23 @@ function Animate1(){
     for(n=0;n<599;n++){
         c1.strokeStyle = "#FF00FF"
         c1.beginPath()
-        c1.moveTo(n,(can.height/2) - spike[n]*100)
-        c1.lineTo(n+1,(can.height/2) - spike[n+1]*100)
+        c1.moveTo(n,(can1.height/2) - spike[n]*100)
+        c1.lineTo(n+1,(can1.height/2) - spike[n+1]*100)
         c1.stroke()
     }
 */
 for(n=0;n<599;n++){
         c1.strokeStyle = "#00FFAA"
         c1.beginPath()
-        c1.moveTo(n,(can.height/2) - pot[n]*100)
-        c1.lineTo(n+1,(can.height/2) - pot[n]*100)
+        c1.moveTo(n,(can1.height/2) - pot[n]*100)
+        c1.lineTo(n+1,(can1.height/2) - pot[n]*100)
         c1.stroke()
     }
     for(n=0;n<599;n++){
         c1.strokeStyle = "#FFFFFF"
         c1.beginPath()
-        c1.moveTo(n,(can.height/2) - Math.hypot(w[0][n][0],w[0][n][1])*sc )
-        c1.lineTo(n+1,(can.height/2) - Math.hypot(w[0][n+1][0],w[0][n+1][1])*sc )
+        c1.moveTo(n,(can1.height/2) - Math.hypot(w[0][n][0],w[0][n][1])*sc )
+        c1.lineTo(n+1,(can1.height/2) - Math.hypot(w[0][n+1][0],w[0][n+1][1])*sc )
         c1.stroke()
     }
 requestAnimationFrame(Animult)
@@ -134,7 +134,7 @@ Animult()
 
 
 
-
+<br />
 
 
 <canvas width=160 height=100 id="can"></canvas>
@@ -192,6 +192,8 @@ function compUnit(theta){
 speed=0.01
 g=0.01
 c=can.getContext("2d")
+    can.style.width=320
+    can.style.height=200
 objects=[]
 for(m=0;m<20;m++){
     objects[m]={model:[],x:Math.floor(m/10)*4,y:1,z:4*(m%10),t:0,p:0}
@@ -200,7 +202,7 @@ for(n=0;n<100;n++){
 }
 }
 t=0
-camera = {x:0,y:0,z:0,t:0,p:0}
+camera = {x:0,y:0,z:0.5,t:0,p:0}
 player = {vx:0,vy:0,vz:0}
 function cap(min,x,max){
     return Math.min(Math.max(x,min),max)
