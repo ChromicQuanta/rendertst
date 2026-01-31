@@ -9,8 +9,7 @@ http.createServer((q,s)=>{
          s.end(d.toString())
        })
    }else{ 
-   s.end("<h1>Schrodinger Equation:</h1>\n"+d.toString())
-   
+ 
   s.writeHeader(200,{"Content-Type":"text/html"})
  fs.readFile("index.html",(e,d)=>{
    if(q.url.includes(process.env.url)){
