@@ -1,0 +1,13 @@
+name: isondrite
+services:
+  isondrite:
+    container_name: isondrite
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - network
+
+networks:
+  network:
+    external: true
